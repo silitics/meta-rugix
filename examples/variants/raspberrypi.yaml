@@ -1,0 +1,79 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siemens/kas/66261547b75885786777a0b9c8a4400ab81d432e/kas/schema-kas.json
+header:
+  version: 14
+
+local_conf_header:
+  base: |
+    PACKAGE_CLASSES ?= "package_deb"
+    VOLATILE_LOG_DIR = "no"
+    IMAGE_INSTALL:append = " gnupg"
+    EXTRA_IMAGE_FEATURES:append = " debug-tweaks ssh-server-dropbear"
+    INIT_MANAGER="systemd"
+
+    # Add `/etc/buildinfo` file with information about the build.
+    INHERIT += "image-buildinfo"
+    IMAGE_BUILDINFO_FILE = "${sysconfdir}/buildinfo"
+    IMAGE_BUILDINFO_VARS:append = " DATETIME DISTRO_NAME IMAGE_BASENAME IMAGE_NAME IMAGE_NAME_SUFFIX MACHINE TUNE_PKGARCH" 
+    IMAGE_BUILDINFO_VARS:append = " MACHINE_FEATURES DISTRO_FEATURES COMMON_FEATURES IMAGE_FEATURES"
+    IMAGE_BUILDINFO_VARS:append = " TUNE_FEATURES TARGET_FPU"
+    IMAGE_BUILDINFO_VARS:append = " DEVICE_MODEL"
+  
+  network: |
+    IMAGE_INSTALL:append = " networkmanager"
+    # Enable systemd-networkd and systemd-resolved.
+    PACKAGECONFIG:append:pn-systemd = " networkd resolved"
+  
+  packages: |
+    PACKAGE_CLASSES = "package_deb"
+    IMAGE_FEATURES:append = " package-management"
+  
+  raspberrypi: |
+    DISTRO_FEATURES:append = " bluez5 bluetooth wifi "
+    IMAGE_INSTALL:append = " bluez5 i2c-tools"
+    ENABLE_UART = "1"
+    LICENSE_FLAGS_ACCEPTED = "synaptics-killswitch"
+  
+  rugix-ctrl: |
+    DISTRO_FEATURES:append = " rugix "
+    IMAGE_INSTALL:append = " rugix-ctrl-bin rugix-bootstrapping-conf "
+  
+  rugix-raspberrypi: |
+    IMAGE_FSTYPES = " tar.bz2 ext4 wic wic.bmap"
+    SDIMG_ROOTFS_TYPE = "ext4"
+    WKS_FILE = "sdimage-rugix-rpi-tryboot.wks.in"
+
+machine: raspberrypi-armv8
+distro: poky
+target:
+  - core-image-minimal
+  # - update-bundle-minimal
+
+defaults:
+  repos:
+    branch: scarthgap
+
+repos:
+  poky:
+    url: https://github.com/yoctoproject/poky.git
+    layers:
+      meta:
+      meta-poky:
+      meta-yocto-bsp:
+
+  meta-raspberrypi:
+    url: "https://github.com/agherzan/meta-raspberrypi.git"
+
+  meta-openembedded:
+    url: "https://github.com/openembedded/meta-openembedded.git"
+    layers:
+      meta-oe:
+      meta-python:
+      meta-networking:
+      meta-multimedia:
+      meta-filesystems:
+  
+  meta-rugix:
+    path: ../..
+    layers:
+      meta-rugix-core:
+      meta-rugix-rpi-tryboot:

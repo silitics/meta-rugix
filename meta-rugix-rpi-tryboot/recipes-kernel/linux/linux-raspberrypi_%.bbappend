@@ -1,0 +1,1 @@
+require ${@bb.utils.contains('DISTRO_FEATURES', 'rugix', '${BPN}_rugix.inc', '', d)}

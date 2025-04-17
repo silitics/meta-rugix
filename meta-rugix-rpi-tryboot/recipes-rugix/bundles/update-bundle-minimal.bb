@@ -1,0 +1,1 @@
+inherit rugix-bundle

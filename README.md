@@ -1,9 +1,12 @@
-# Rugix Yocto Layer(s)
+# Rugix Yocto Layers
 
-This repository provides Yocto layers for integrating Rugix Ctrl into a bespoke Linux distribution for your device.
-Rugix Ctrl provides powerful over-the-air update and state management capabilities, designed to simplify the development of embedded Linux devices.
+This repository provides Yocto layers for integrating Rugix Ctrl into a custom Linux distribution tailored to your embedded device.
+Rugix Ctrl enables robust over-the-air (OTA) updates and system state management, streamlining the development and maintenance of embedded Linux systems.
 
-## Layers
+> [!WARNING]
+> This repository is a work in progress and is not intended for production use at this time.
 
-- `meta-rugix-core`: Core layer for installing Rugix Ctrl and building Rugix update bundles.
-- `meta-rugix-rpi-tryboot`: BSP for building R
+## Provided Layers
+
+- `meta-rugix-core`: Core layer for installing Rugix Ctrl and building Rugix-compatible update bundles.
+- `meta-rugix-rpi-tryboot`: BSP layer for building images with Rugix support on Raspberry Pi using Tryboot.

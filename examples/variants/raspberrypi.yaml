@@ -45,8 +45,7 @@ local_conf_header:
 machine: raspberrypi-armv8
 distro: poky
 target:
-  - core-image-minimal
-  # - update-bundle-minimal
+  - update-bundle-minimal
 
 defaults:
   repos:
@@ -71,6 +70,10 @@ repos:
       meta-networking:
       meta-multimedia:
       meta-filesystems:
+  
+  meta-lts-mixins-rust:
+    url: "https://git.yoctoproject.org/meta-lts-mixins"
+    branch: scarthgap/rust
   
   meta-rugix:
     path: ../..

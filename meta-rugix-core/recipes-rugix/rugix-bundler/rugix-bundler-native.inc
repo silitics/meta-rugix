@@ -11,7 +11,7 @@ python __anonymous() {
     }.get(arch, None)
 
     if target is None:
-        raise bb.parse.SkipRecipe("Unsupported build architecture: %s" % arch)
+        raise bb.parse.SkipRecipe(f"Unsupported build architecture: {arch}.")
     
     version = d.getVar('RUGIX_VERSION')
 

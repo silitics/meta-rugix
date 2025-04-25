@@ -15,7 +15,7 @@ python __anonymous() {
     
     version = d.getVar('RUGIX_VERSION')
 
-    d.setVar("SRC_URI", f"https://github.com/silitics/rugix/releases/download/v{version}/{target}.tar;name={arch};subdir=rugix-binaries")
+    d.setVar("SRC_URI", f"https://github.com/silitics/rugix/releases/download/v{version}/{target}.tar;downloadfilename=rugix-{version}-{arch}.tar;name={arch};subdir=rugix-binaries")
 }
 
 S = "${WORKDIR}"

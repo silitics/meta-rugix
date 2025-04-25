@@ -39,6 +39,10 @@ Depending on your project and requirements, you may need to adapt those layers o
 The `rugix-ctrl` recipe building Rugix Ctrl from source is not working at the moment due to some compilation issue.
 For the time being, use the binary variant `rugix-ctrl-bin`, which installs pre-build binaries.
 
+## Getting Started
+
+We provide [kas](https://github.com/siemens/kas)-based [examples](./examples/) to help you get started quickly.
+
 ## ⚖️ Licensing
 
 This project is licensed under either [MIT](https://github.com/silitics/rugix/blob/main/LICENSE-MIT) or [Apache 2.0](https://github.com/silitics/rugix/blob/main/LICENSE-APACHE) at your opinion.

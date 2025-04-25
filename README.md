@@ -33,7 +33,7 @@ We provide [kas](https://github.com/siemens/kas)-based [examples](./examples/) t
 The layer [`meta-rugix-core`](./meta-rugix-core/) provides everything required for installing Rugix Ctrl and building Rugix-compatible update bundles.
 In addition the following board-specific layers are provided:
 
-- [`meta-rugix-rpi-tryboot`](./meta-rugix-rpi-tryboot/): BSP layer for building Raspberry Pi images with [`tryboot`](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#fail-safe-os-updates-tryboot) support.
+- [`meta-rugix-rpi-tryboot`](./meta-rugix-rpi-tryboot/): BSP layer for building Raspberry Pi images with [`tryboot`](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#fail-safe-os-updates-tryboot) support. This layer has so far only been tested on Raspberry Pi 5.
 
 The board-specific layers serve as **examples** for how to integrate Rugix Ctrl with specific boards.
 Depending on your project and requirements, you may need to adapt those layers or write your own.

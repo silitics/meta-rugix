@@ -6,5 +6,5 @@ partitions = [
     { name = "boot-b", size = "128MiB", type = "EBD0A0A2-B9E5-4433-87C0-68B6B72699C7" },
     { name = "system-a", size = "4GiB" },
     { name = "system-b", size = "4GiB" },
-    { name = "data", filesystem = { type = "Ext4" } },
+    { name = "data", filesystem = { type = "ext4" } },
 ]

@@ -24,7 +24,3 @@ local_conf_header:
     # Enable automatic network configuration.
     IMAGE_INSTALL:append = " networkmanager"
     PACKAGECONFIG:append:pn-systemd = " networkd resolved"
-
-    # Rugix-specific configuration.
-    DISTRO_FEATURES:append = " rugix "
-    IMAGE_INSTALL:append = " rugix-ctrl-bin rugix-bootstrapping-conf "

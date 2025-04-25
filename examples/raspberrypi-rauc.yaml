@@ -11,15 +11,19 @@ local_conf_header:
     ENABLE_UART = "1"
     LICENSE_FLAGS_ACCEPTED = "synaptics-killswitch"
 
-  rugix: |
-    # Rugix-specific configuration.
-    DISTRO_FEATURES:append = " rugix "
-    IMAGE_INSTALL:append = " rugix-ctrl-bin rugix-bootstrapping-conf "
-
-  rugix-raspberrypi: |
-    IMAGE_FSTYPES = " tar.bz2 ext4 wic wic.bmap"
+  rauc-raspberrypi: |
+    RPI_USE_U_BOOT = "1"
+    IMAGE_INSTALL:append = " rauc"
+    DISTRO_FEATURES:append = " rauc"
+    IMAGE_INSTALL:append = " kernel-image kernel-modules kernel-devicetree"
+    PREFERRED_PROVIDER_virtual/bootloader = "u-boot"
+    IMAGE_FSTYPES = " tar.bz2 ext4 wic.bz2 wic.bmap"
     SDIMG_ROOTFS_TYPE = "ext4"
-    WKS_FILE = "sdimage-rugix-rpi-tryboot.wks.in"
+    # Note: Image must be a multiple of 4096 for adaptive updates to work!
+    IMAGE_ROOTFS_EXTRA_SPACE:append = " + 409600"
+    WKS_FILE = "sdimage-dual-raspberrypi.wks.in"
+    # Enable adaptive updates.
+    RAUC_SLOT_rootfs[adaptive] = "block-hash-index"
   
   rugix-test:
     IMAGE_INSTALL:append = " rugix-test-file-changed"
@@ -28,7 +32,7 @@ machine: raspberrypi-armv8
 distro: poky
 target:
   - core-image-minimal
-  - update-bundle-minimal
+  - update-bundle
 
 defaults:
   repos:
@@ -53,14 +57,16 @@ repos:
       meta-networking:
       meta-multimedia:
       meta-filesystems:
-
-  meta-lts-mixins-rust:
-    url: "https://git.yoctoproject.org/meta-lts-mixins"
-    branch: scarthgap/rust
+  
+  meta-rauc:
+    url: "https://github.com/rauc/meta-rauc.git"
+  
+  meta-rauc-community:
+    url: "https://github.com/rauc/meta-rauc-community.git"
+    layers:
+      meta-rauc-raspberrypi:
 
   meta-rugix:
     path: ../
     layers:
-      meta-rugix-core:
-      meta-rugix-rpi-tryboot:
       meta-rugix-test:

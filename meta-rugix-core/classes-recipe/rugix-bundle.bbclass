@@ -38,6 +38,13 @@ python do_configure() {
 
     from pathlib import Path
 
+    DEFAULT_BLOCK_ENCODING = """
+    hash-algorithm = "sha512-256"
+    chunker = "casync-64"
+    compression = { type = "xz", level = 9 }
+    deduplication = true
+    """
+
     machine = d.getVar("MACHINE")
 
     deploy_dir_image = Path(d.getVar("DEPLOY_DIR_IMAGE"))
@@ -60,6 +67,7 @@ python do_configure() {
 
         payload_image = payload_flags.get("image")
         payload_partition = payload_flags.get("partition")
+        payload_slot = payload_flags.get("slot") or payload
 
         if not payload_partition:
             bb.error(f"No partition set for payload {repr(payload)}.")
@@ -84,7 +92,10 @@ python do_configure() {
         lines.append(f'filename = "partition{partition}.img"')
         lines.append("[payloads.delivery]")
         lines.append('type = "slot"')
-        lines.append(f'slot = "{payload}"')
+        lines.append(f'slot = "{payload_slot}"')
+        lines.append("[payloads.block-encoding]")
+        lines.append(DEFAULT_BLOCK_ENCODING)
+
     
     with open(bundle_dir / "rugix-bundle.toml", "wt", encoding="utf-8") as rugix_bundle:
         rugix_bundle.write("\n".join(lines))

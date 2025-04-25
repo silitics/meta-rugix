@@ -24,6 +24,10 @@ Rugix Ctrl **supports or can be adapted to almost any requirements you may have*
 
 [For details, check out Rugix Ctrl's documentation.](https://rugix.org/docs/ctrl)
 
+## Getting Started
+
+We provide [kas](https://github.com/siemens/kas)-based [examples](./examples/) to help you get started quickly.
+
 ## Provided Layers
 
 The layer [`meta-rugix-core`](./meta-rugix-core/) provides everything required for installing Rugix Ctrl and building Rugix-compatible update bundles.
@@ -38,10 +42,6 @@ Depending on your project and requirements, you may need to adapt those layers o
 
 The `rugix-ctrl` recipe building Rugix Ctrl from source is not working at the moment due to some compilation issue.
 For the time being, use the binary variant `rugix-ctrl-bin`, which installs pre-build binaries.
-
-## Getting Started
-
-We provide [kas](https://github.com/siemens/kas)-based [examples](./examples/) to help you get started quickly.
 
 ## ⚖️ Licensing
 

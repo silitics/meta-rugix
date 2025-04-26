@@ -22,7 +22,7 @@ Rugix Ctrl has all features you would expect from a state-of-the-art update solu
 
 Rugix Ctrl **supports or can be adapted to almost any requirements you may have** when it comes to robust and secure updates of your entire system as well as its individual components.
 
-[For details, check out Rugix Ctrl's documentation.](https://rugix.org/docs/ctrl)
+For details, check out [Rugix Ctrl's documentation](https://rugix.org/docs/ctrl) and the [documentation on the Yocto layers](https://oss.silitics.com/rugix/docs/ctrl/advanced/yocto-integration/).
 
 ## Getting Started
 

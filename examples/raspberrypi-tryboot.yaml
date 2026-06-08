@@ -3,6 +3,7 @@ header:
   version: 14
   includes:
     - examples/include/common.yaml
+    - examples/include/base.yaml
 
 local_conf_header:
   raspberrypi: |
@@ -21,33 +22,10 @@ distro: poky
 target:
   - core-image-minimal
 
-defaults:
-  repos:
-    branch: scarthgap
-
 repos:
-  poky:
-    url: https://github.com/yoctoproject/poky.git
-    layers:
-      meta:
-      meta-poky:
-      meta-yocto-bsp:
-
   meta-raspberrypi:
     url: "https://github.com/agherzan/meta-raspberrypi.git"
-
-  meta-openembedded:
-    url: "https://github.com/openembedded/meta-openembedded.git"
-    layers:
-      meta-oe:
-      meta-python:
-      meta-networking:
-      meta-multimedia:
-      meta-filesystems:
-
-  meta-lts-mixins-rust:
-    url: "https://git.yoctoproject.org/meta-lts-mixins"
-    branch: scarthgap/rust
+    branch: master
 
   meta-rugix:
     layers:

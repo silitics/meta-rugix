@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siemens/kas/refs/heads/master/kas/schema-kas.json
+
+header:
+  version: 14
+
+repos:
+  bitbake:
+    url: https://git.openembedded.org/bitbake
+    branch: "2.18"
+    layers: {}
+
+  openembedded-core:
+    url: https://git.openembedded.org/openembedded-core
+    branch: wrynose
+    layers:
+      meta:
+
+  meta-yocto:
+    url: https://git.yoctoproject.org/meta-yocto
+    branch: wrynose
+    layers:
+      meta-poky:
+      meta-yocto-bsp:
+
+  meta-openembedded:
+    url: https://github.com/openembedded/meta-openembedded.git
+    branch: wrynose
+    layers:
+      meta-oe:
+      meta-python:
+      meta-networking:
+      meta-multimedia:
+      meta-filesystems:

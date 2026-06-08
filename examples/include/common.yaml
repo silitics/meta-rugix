@@ -8,9 +8,8 @@ local_conf_header:
     # Basic system configuration.
     PACKAGE_CLASSES = "package_deb"
     IMAGE_FEATURES:append = " package-management"
-    VOLATILE_LOG_DIR = "no"
-    EXTRA_IMAGE_FEATURES:append = " debug-tweaks ssh-server-dropbear"
-    INIT_MANAGER="systemd"
+    EXTRA_IMAGE_FEATURES:append = " empty-root-password allow-empty-password allow-root-login ssh-server-dropbear"
+    INIT_MANAGER = "systemd"
 
     # Add `/etc/buildinfo` file with information about the build.
     INHERIT += "image-buildinfo"

@@ -20,13 +20,13 @@ do_deploy[depends] += " \
 
 do_deploy() {
     FATSOURCEDIR="${WORKDIR}/uboot-boot"
-    mkdir -p ${FATSOURCEDIR}/.rugix
+    mkdir -p ${FATSOURCEDIR}/rugix
 
     # Compile boot command script to boot.scr.
-    mkimage -T script -d ${WORKDIR}/boot.cmd ${FATSOURCEDIR}/boot.scr
+    mkimage -T script -d ${UNPACKDIR}/boot.cmd ${FATSOURCEDIR}/boot.scr
 
     # Mark partition for Rugix bootstrapping.
-    touch ${FATSOURCEDIR}/.rugix/bootstrap
+    touch ${FATSOURCEDIR}/rugix/bootstrap
 
     # Create FAT image.
     FATIMG="${WORKDIR}/uboot-boot.vfat"
@@ -34,7 +34,7 @@ do_deploy() {
 
     rm -f ${FATIMG}
     mkdosfs -n "BOOT" -C ${FATIMG} ${BLOCKS}
-    mcopy -i ${FATIMG} -s ${FATSOURCEDIR}/* ${FATSOURCEDIR}/.rugix ::/
+    mcopy -i ${FATIMG} -s ${FATSOURCEDIR}/* ::/
     chmod 644 ${FATIMG}
 
     mv ${FATIMG} ${DEPLOYDIR}/

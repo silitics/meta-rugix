@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   push:
   pull_request:
-    branches: [main]
+    branches: [main, wrynose]
 
 env:
   KAS_CONTAINER_ENGINE: podman
@@ -18,18 +18,16 @@ jobs:
     strategy:
       matrix:
         include:
-          - config: examples/raspberrypi-tryboot.yaml
-            artifact: raspberrypi-tryboot
-          - config: examples/raspberrypi-uboot.yaml
-            artifact: raspberrypi-uboot
-          - config: examples/frdm-imx91.yaml
-            artifact: frdm-imx91
           - config: examples/qemu-x86_64-grub.yaml
             artifact: qemu-x86_64-grub
             test_platform: qemux86-64
           - config: examples/qemu-arm64-uboot.yaml
             artifact: qemu-arm64-uboot
             test_platform: qemuarm64
+          - config: examples/raspberrypi-tryboot.yaml
+            artifact: raspberrypi-tryboot
+          - config: examples/raspberrypi-uboot.yaml
+            artifact: raspberrypi-uboot
     steps:
       - name: Checkout
         uses: actions/checkout@v6

@@ -22,13 +22,13 @@ do_deploy[depends] += " \
 do_deploy() {
     FATSOURCEDIR="${WORKDIR}/efi-boot"
     mkdir -p ${FATSOURCEDIR}/EFI/BOOT
-    mkdir -p ${FATSOURCEDIR}/.rugix
+    mkdir -p ${FATSOURCEDIR}/rugix
     mkdir -p ${FATSOURCEDIR}/rugpi
 
     cp ${DEPLOY_DIR_IMAGE}/grub-efi-bootx64.efi ${FATSOURCEDIR}/EFI/BOOT/bootx64.efi
-    cp ${WORKDIR}/grub.cfg ${FATSOURCEDIR}/EFI/BOOT/grub.cfg
+    cp ${UNPACKDIR}/grub.cfg ${FATSOURCEDIR}/EFI/BOOT/grub.cfg
 
-    touch ${FATSOURCEDIR}/.rugix/bootstrap
+    touch ${FATSOURCEDIR}/rugix/bootstrap
 
     # Initialize GRUB environment files with default boot state.
     #
@@ -43,7 +43,7 @@ do_deploy() {
 
     rm -f ${FATIMG}
     mkdosfs -n "EFI" -C ${FATIMG} ${BLOCKS}
-    mcopy -i ${FATIMG} -s ${FATSOURCEDIR}/* ${FATSOURCEDIR}/.rugix ::/
+    mcopy -i ${FATIMG} -s ${FATSOURCEDIR}/* ::/
     chmod 644 ${FATIMG}
 
     mv ${FATIMG} ${DEPLOYDIR}/

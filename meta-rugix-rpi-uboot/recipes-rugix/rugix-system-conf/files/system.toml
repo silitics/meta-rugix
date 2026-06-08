@@ -1,4 +1,4 @@
-#:schema https://raw.githubusercontent.com/rugix/rugix/refs/v0.8/schemas/rugix-ctrl-system.schema.json
+#:schema https://raw.githubusercontent.com/rugix/rugix/refs/tags/v1.2.0/schemas/rugix-ctrl-system.schema.json
 [config-partition]
 partition = 1
 protected = true

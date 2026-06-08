@@ -23,7 +23,7 @@ logger = logging.getLogger("wic")
 
 
 class RpiTrybootPlugin(SourcePlugin):
-    name = "rpi-tryboot"
+    name = "rpi_tryboot"
 
     @classmethod
     def do_configure_partition(
@@ -43,8 +43,8 @@ class RpiTrybootPlugin(SourcePlugin):
         with open(f"{hdddir}/autoboot.txt", "w", encoding="utf-8") as autoboot_txt:
             autoboot_txt.write(AUTOBOOT_TXT)
 
-        exec_cmd(f"install -d {hdddir}/.rugix")
-        exec_cmd(f"touch {hdddir}/.rugix/bootstrap")
+        exec_cmd(f"install -d {hdddir}/rugix")
+        exec_cmd(f"touch {hdddir}/rugix/bootstrap")
 
     @classmethod
     def do_prepare_partition(
@@ -70,4 +70,4 @@ class RpiTrybootPlugin(SourcePlugin):
             part.lineno,
             part.fstype,
         )
-        exec_cmd(f"mcopy -i {rootfs} -o -s {hdddir}/.rugix ::/.rugix")
+        exec_cmd(f"mcopy -i {rootfs} -o -s {hdddir}/rugix ::/")

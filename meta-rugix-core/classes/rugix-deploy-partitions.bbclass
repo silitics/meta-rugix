@@ -18,6 +18,8 @@ do_deploy_partitions_wic() {
 
 # Only wire the task for image recipes that actually build a WIC image.
 python __anonymous() {
-    if 'wic' in (d.getVar('IMAGE_FSTYPES') or '').split():
-        bb.build.addtask('do_deploy_partitions_wic', 'do_image_complete', 'do_image_wic', d)
+    for fs_type in (d.getVar('IMAGE_FSTYPES') or '').split():
+        if fs_type.startswith('wic'):
+            bb.build.addtask('do_deploy_partitions_wic', 'do_image_complete', 'do_image_wic', d)
+            break
 }

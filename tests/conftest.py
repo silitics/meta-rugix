@@ -35,6 +35,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
 def pytest_configure(config: pytest.Config) -> None:
     config.addinivalue_line("markers", "x86_64: x86_64/GRUB-specific tests")
     config.addinivalue_line("markers", "arm64: ARM64/U-Boot-specific tests")
+    config.addinivalue_line("markers", "build: Yocto build tests")
     config.addinivalue_line("markers", "slow: long-running tests")
 
 

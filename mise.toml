@@ -1,0 +1,101 @@
+[tools]
+"pipx:kas" = "latest"
+"uv" = "latest"
+
+[env]
+_.file = ".env"
+
+KAS_CONTAINER_ENGINE = "{{ get_env(name='KAS_CONTAINER_ENGINE', default='podman') }}"
+KAS_CONTAINER_IMAGE_DISTRO = "{{ get_env(name='KAS_CONTAINER_IMAGE_DISTRO', default='debian-bookworm') }}"
+KAS_WORK_DIR = "{{ get_env(name='KAS_WORK_DIR', default=config_root ~ '/_kas') }}"
+KAS_BUILD_DIR = "{{ get_env(name='KAS_BUILD_DIR', default=config_root ~ '/build') }}"
+KAS_TMP_DIR = "{{ get_env(name='KAS_TMP_DIR', default=config_root ~ '/_tmp') }}"
+SSTATE_DIR = "{{ get_env(name='SSTATE_DIR', default=config_root ~ '/cache/sstate-cache') }}"
+DL_DIR = "{{ get_env(name='DL_DIR', default=config_root ~ '/cache/downloads') }}"
+
+[vars]
+uv_run = "uv run --with 'rugix-testkit @ git+https://github.com/rugix/rugix-testkit.git' --with pytest --with pytest-timeout"
+deploy_dir = "{{ get_env(name='KAS_BUILD_DIR', default=config_root ~ '/build') }}/tmp/deploy/images"
+ssh_opts = "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+
+[tasks.clean]
+description = "Remove all build artifacts."
+run = 'rm -rf "$KAS_WORK_DIR" "$KAS_BUILD_DIR" "$KAS_TMP_DIR"'
+
+[tasks."clean-all"]
+description = "Remove all build artifacts and the cache."
+depends = ["clean"]
+run = 'rm -rf "{{ config_root }}/cache"'
+
+[tasks.kas]
+description = "Run an arbitrary kas-container command."
+run = '''
+mkdir -p "$KAS_WORK_DIR" "$KAS_BUILD_DIR" "$KAS_TMP_DIR"
+chmod 1777 "$KAS_TMP_DIR"
+kas-container --runtime-args "-v $KAS_TMP_DIR:/tmp:rw" "$@"
+'''
+
+[tasks.build]
+description = "Build a Yocto image with kas-container."
+run = '''
+mkdir -p "$KAS_WORK_DIR" "$KAS_BUILD_DIR" "$KAS_TMP_DIR"
+chmod 1777 "$KAS_TMP_DIR"
+kas-container --runtime-args "-v $KAS_TMP_DIR:/tmp:rw" build "$@"
+'''
+
+[tasks."run-qemu-x86_64"]
+description = "Run the QEMU x86-64 image with GRUB EFI boot."
+run = '''
+nix_prefix=()
+if command -v nix >/dev/null 2>&1; then
+    nix_prefix=(nix shell nixpkgs#qemu --command)
+fi
+exec "${nix_prefix[@]}" {{ vars.uv_run }} rugix-testkit run --arch x86_64 --ssh-port 2222 \
+    --drive {{ vars.deploy_dir }}/qemux86-64/core-image-minimal-qemux86-64.rootfs.wic,overlay=true,size=16G \
+    --pflash {{ vars.deploy_dir }}/qemux86-64/ovmf.code.qcow2,format=qcow2,readonly=true \
+    --pflash {{ vars.deploy_dir }}/qemux86-64/ovmf.vars.qcow2,format=qcow2 \
+    "$@"
+'''
+
+[tasks."run-qemu-arm64"]
+description = "Run the QEMU ARM64 image with U-Boot."
+run = '''
+nix_prefix=()
+if command -v nix >/dev/null 2>&1; then
+    nix_prefix=(nix shell nixpkgs#qemu --command)
+fi
+exec "${nix_prefix[@]}" {{ vars.uv_run }} rugix-testkit run --arch aarch64 --cpu cortex-a57 --ssh-port 2222 \
+    --drive {{ vars.deploy_dir }}/qemuarm64/core-image-minimal-qemuarm64.rootfs.wic,interface=virtio,overlay=true,size=16G \
+    --pflash {{ vars.deploy_dir }}/qemuarm64/u-boot.bin,size=64M,readonly=true \
+    --pflash ,size=64M \
+    "$@"
+'''
+
+[tasks."ssh-qemu"]
+description = "SSH into a running QEMU VM."
+run = "ssh {{ vars.ssh_opts }} -p 2222 root@localhost"
+
+[tasks."scp-qemu"]
+description = "Copy a file into a running QEMU VM."
+usage = '''
+arg "<file>" help="File to copy into the VM"
+arg "[dest]" help="Destination path in the VM" default="/root"
+'''
+run = 'scp {{ vars.ssh_opts }} -P 2222 "$usage_file" "root@localhost:$usage_dest"'
+
+[tasks.test]
+description = "Run all integration tests."
+run = '''
+if command -v nix >/dev/null 2>&1; then
+    exec nix shell nixpkgs#qemu --command {{ vars.uv_run }} pytest "$@"
+fi
+exec {{ vars.uv_run }} pytest "$@"
+'''
+
+[tasks."test-x86_64"]
+description = "Run integration tests for x86-64 only."
+run = '{{ vars.uv_run }} pytest -k "qemux86-64" "$@"'
+
+[tasks."test-arm64"]
+description = "Run integration tests for ARM64 only."
+run = '{{ vars.uv_run }} pytest -k "qemuarm64" "$@"'

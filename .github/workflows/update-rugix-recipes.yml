@@ -1,0 +1,101 @@
+name: Update Rugix Recipes
+
+on:
+  schedule:
+    - cron: "27 5 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: update-rugix-recipes
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  update:
+    name: Update ${{ matrix.branch }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        branch: [main, scarthgap, wrynose]
+
+    steps:
+      - name: Create automation token
+        id: app-token
+        uses: actions/create-github-app-token@v3.2.0
+        with:
+          client-id: ${{ vars.RUGIX_AUTOMATION_CLIENT_ID }}
+          private-key: ${{ secrets.RUGIX_AUTOMATION_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Checkout automation
+        uses: actions/checkout@v6
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          ref: main
+          path: automation
+
+      - name: Checkout ${{ matrix.branch }}
+        uses: actions/checkout@v6
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          ref: ${{ matrix.branch }}
+          path: target
+          fetch-depth: 0
+
+      - name: Install mise
+        uses: jdx/mise-action@v4
+        with:
+          working_directory: automation
+          install: false
+          cache: false
+
+      - name: Generate recipes
+        id: generate
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          cd automation
+          mise run update-rugix-recipes -- "$GITHUB_WORKSPACE/target"
+          if [[ -n "$(git -C "$GITHUB_WORKSPACE/target" status --porcelain)" ]]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create or update pull request
+        if: steps.generate.outputs.changed == 'true'
+        working-directory: target
+        env:
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          TARGET_BRANCH: ${{ matrix.branch }}
+        run: |
+          update_branch="automation/rugix-recipes-${TARGET_BRANCH}"
+          app_user_id="$(gh api "/users/${APP_SLUG}[bot]" --jq .id)"
+
+          git config user.name "${APP_SLUG}[bot]"
+          git config user.email "${app_user_id}+${APP_SLUG}[bot]@users.noreply.github.com"
+          git checkout -B "$update_branch"
+          git add \
+            meta-rugix-core/recipes-rugix/rugix-ctrl \
+            meta-rugix-core/recipes-rugix/rugix-bundler
+          git commit -m "chore: add new Rugix release recipes"
+          git push --force origin "HEAD:refs/heads/${update_branch}"
+
+          pull_request="$(
+            gh pr list \
+              --base "$TARGET_BRANCH" \
+              --head "$update_branch" \
+              --state open \
+              --json number \
+              --jq '.[0].number // empty'
+          )"
+          if [[ -z "$pull_request" ]]; then
+            gh pr create \
+              --base "$TARGET_BRANCH" \
+              --head "$update_branch" \
+              --title "Add new Rugix release recipes" \
+              --body "Automated recipe update for stable Rugix releases newer than 1.2.0."
+          fi

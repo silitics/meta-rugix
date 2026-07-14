@@ -27,6 +27,10 @@ description = "Remove all build artifacts and the cache."
 depends = ["clean"]
 run = 'rm -rf "{{ config_root }}/cache"'
 
+[tasks."update-rugix-recipes"]
+description = "Create recipes for stable Rugix releases newer than 1.2.0."
+run = 'python3 "{{ config_root }}/scripts/update_rugix_recipes.py" "$@"'
+
 [tasks.kas]
 description = "Run an arbitrary kas-container command."
 run = '''

@@ -90,5 +90,7 @@ SLOTEOF
         bbfatal "RUGIX_SLOTS is empty, set it in the BSP layer to define the slot-to-partition mapping."
     fi
 
-    rugix-bundler bundle "${bundle_dir}" "${IMGDEPLOYDIR}/${IMAGE_NAME}.rugixb"
+    # Native filesystem tools must bypass pseudo so missing output paths retain
+    # their real errno; Rugix Bundler uses that to validate distinct paths.
+    PSEUDO_UNLOAD=1 rugix-bundler bundle "${bundle_dir}" "${IMGDEPLOYDIR}/${IMAGE_NAME}.rugixb"
 }

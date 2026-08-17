@@ -1,0 +1,15 @@
+[Unit]
+Description=Privileged Rugix Ctrl Operation Daemon
+After=local-fs.target
+ConditionFileIsExecutable=/usr/bin/rugix-ctrl
+
+[Service]
+Type=simple
+User=root
+Group=rugix-daemon
+UMask=0117
+ExecStart=/usr/bin/rugix-ctrl daemon
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

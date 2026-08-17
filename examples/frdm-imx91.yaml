@@ -30,10 +30,8 @@ local_conf_header:
     PREFERRED_PROVIDER_u-boot = "u-boot-imx"
     PREFERRED_PROVIDER_virtual/bootloader = "u-boot-imx"
 
-    # Use latest Git version. This is required because we we need an unreleased
-    # change for the dotless bootstrapping marker (remove once 1.1.3 lands).
-    PREFERRED_VERSION_rugix-ctrl = "git"
-    PREFERRED_VERSION_rugix-bundler-native = "git"
+    PREFERRED_VERSION_rugix-ctrl = "1.3.0"
+    PREFERRED_VERSION_rugix-bundler-native = "1.3.0"
 
   image-conf: |
     IMAGE_FSTYPES = "tar.bz2 wic wic.bmap rugixb rugixb.hash"

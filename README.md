@@ -1,22 +1,28 @@
 # Rugix Yocto Layers
 
-This repository provides Yocto layers for integrating [Rugix Ctrl](https://rugix.org/docs/ctrl) into a custom, [Yocto-based](https://www.yoctoproject.org) Linux distribution tailored to your embedded device.
-Rugix Ctrl **enables secure and efficient over-the-air (OTA) updates and provides robust state management capabilities** designed to streamline the development and maintenance of embedded Linux devices at scale.
-Rugix Ctrl is part of the [Rugix Project](https://rugix.org).
+This repository provides the official Yocto layers for integrating [Rugix
+Ctrl](https://rugix.org/docs/ctrl) into a custom,
+[Yocto-based](https://www.yoctoproject.org) Linux distribution. Rugix Ctrl is
+an open-source tool for managing the on-device lifecycle of Linux systems. It
+is developed by the [Rugix](https://rugix.org) project.
 
-Rugix Ctrl is a state-of-the-art update and state management engine:
+> [!NOTE]
+> **Support:** This repository is covered by [Tier 2: Maintained Integration](https://rugix.org/support-commitment/#tier-maintained-integration) of the Rugix Support Commitment.
+
+Rugix Ctrl provides robust and secure over-the-air (OTA) updates with optional
+application and persistent state management:
 
 - **A/B Updates**: Atomic system updates with automatic rollback on failure.
 - **Delta Updates**: [Highly-efficient delta updates](https://rugix.org/blog/efficient-delta-updates) minimizing bandwidth.
 - **Signature Verification**: Cryptographic verification _before_ installing anything anywhere.
 - **State Management**: Flexible state management inspired by container-based architectures.
-- **Application Updates**: Atomic deployment and rollback of [application workloads](https://rugix.org/docs/ctrl/application-updates/).
-- **Vendor-Agnostic**: Compatible with [various fleet management solutions](https://rugix.org/docs/ctrl/advanced/fleet-management) (avoids lock-in).
-- **Flexible Boot Flows**: Supports [any bootloader and boot process](https://rugix.org/docs/ctrl/advanced/boot-flows).
+- **Application Updates**: Atomic deployment and rollback of [application workloads](https://rugix.org/docs/ctrl/application-management/).
+- **Vendor-Agnostic**: Compatible with [various fleet management solutions](https://rugix.org/docs/ctrl/integration/fleet-management/) (avoids lock-in).
+- **Flexible Boot Flows**: Supports [any bootloader and boot process](https://rugix.org/docs/ctrl/updates/system-updates/boot-flows/).
 
 Rugix Ctrl supports different update strategies (symmetric A/B, asymmetric with recovery, incremental updates) and can be adapted to almost any requirements you may have for robust and secure updates.
 
-For details, check out [Rugix Ctrl's documentation](https://rugix.org/docs/ctrl) and the [documentation on the Yocto layers](https://rugix.org/docs/ctrl/advanced/yocto-integration/).
+For details, check out [Rugix Ctrl's documentation](https://rugix.org/docs/ctrl) and the [documentation on the Yocto layers](https://rugix.org/docs/ctrl/integration/build-systems/yocto/).
 
 ## Supported Yocto Versions
 
@@ -69,7 +75,7 @@ IMAGE_INSTALL:append:my-machine = " packagegroup-rugix-bsp"
 - **`WKS_FILE_DEPENDS`** declares build-time dependencies of the WKS file.
 - **`RUGIX_SLOTS`** maps slot names to WIC partition numbers (e.g., `"system:2"` or `"boot:2 system:4"`).
 
-**Creating a BSP layer.** To create a Rugix BSP layer for a new board, start from one of the provided BSP layers and adapt it. See the [Rugix documentation](https://rugix.org/docs/ctrl/advanced/boot-flows) for the available boot flows and configuration options.
+**Creating a BSP layer.** To create a Rugix BSP layer for a new board, start from one of the provided BSP layers and adapt it. See the [Rugix documentation](https://rugix.org/docs/ctrl/updates/system-updates/boot-flows/) for the available boot flows and configuration options.
 
 ## Community Showcase
 

@@ -1,0 +1,7 @@
+dangerously-insecure = @DANGEROUSLY_INSECURE@
+
+[features]
+factory-reset = @FACTORY_RESET@
+system-commit = @SYSTEM_COMMIT@
+system-reboot = @SYSTEM_REBOOT@
+app-lifecycle = @APP_LIFECYCLE@

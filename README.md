@@ -1,10 +1,12 @@
 # Rugix Yocto Layers
 
-This repository provides the official Yocto layers for integrating [Rugix
-Ctrl](https://rugix.org/docs/ctrl) into a custom,
+This repository provides the official Yocto layers for integrating
+[Rugix Ctrl](https://rugix.org/docs/ctrl) and the optional
+[Rugix Admin](https://rugix.org/docs/admin) management interface into a custom,
 [Yocto-based](https://www.yoctoproject.org) Linux distribution. Rugix Ctrl is
-an open-source tool for managing the on-device lifecycle of Linux systems. It
-is developed by the [Rugix](https://rugix.org) project.
+an open-source tool for deploying robust updates and managing application
+workloads and persistent state. It is developed by the
+[Rugix](https://rugix.org) project.
 
 Rugix Ctrl provides robust and secure over-the-air (OTA) updates with optional
 application and persistent state management:
@@ -19,7 +21,9 @@ application and persistent state management:
 
 Rugix Ctrl supports different update strategies (symmetric A/B, asymmetric with recovery, incremental updates) and can be adapted to almost any requirements you may have for robust and secure updates.
 
-For details, check out [Rugix Ctrl's documentation](https://rugix.org/docs/ctrl) and the [documentation on the Yocto layers](https://rugix.org/docs/ctrl/integration/build-systems/yocto/).
+For details, check out
+[Rugix Ctrl's documentation](https://rugix.org/docs/ctrl) and the
+[Yocto integration guide](https://rugix.org/docs/ctrl/integration/build-systems/yocto/).
 
 ## Supported Yocto Versions
 
@@ -27,7 +31,8 @@ We only support Yocto LTS releases and maintain a dedicated branch for each (e.g
 
 This branch targets Yocto Wrynose. The Rugix core layer, QEMU BSP examples, and Raspberry Pi BSP examples are the supported baseline.
 
-This branch carries Rugix Ctrl 1.2.0 recipes. Older Rugix Ctrl recipe versions are not kept on the Wrynose branch.
+This branch carries Rugix Ctrl 1.2.0 and 1.3.0 recipes. BitBake selects the
+latest compatible version unless the distribution pins another one.
 
 ## Getting Started
 
@@ -36,7 +41,9 @@ Each active example has a matching KAS lockfile next to it. Update a lockfile wi
 
 ## Provided Layers
 
-The layer [`meta-rugix-core`](./meta-rugix-core/) provides everything required for installing Rugix Ctrl and building Rugix-compatible update bundles.
+The layer [`meta-rugix-core`](./meta-rugix-core/) provides everything required
+for installing Rugix Ctrl, optionally installing Rugix Admin, and building
+Rugix-compatible update bundles.
 In addition the following board-specific layers (Rugix BSP layers) are provided:
 
 - [`meta-rugix-qemu-arm64-uboot`](./meta-rugix-qemu-arm64-uboot/): supported BSP layer for QEMU ARM64 with U-Boot-based A/B updates.
@@ -46,6 +53,38 @@ In addition the following board-specific layers (Rugix BSP layers) are provided:
 
 The board-specific layers serve as **examples** for how to integrate Rugix Ctrl with specific boards and boot flows.
 Depending on your project and requirements, you may need to adapt those layers or write your own.
+
+## Rugix Admin
+
+Add Rugix Admin to an image that already integrates Rugix Ctrl by installing
+the `rugix-admin` package:
+
+```bitbake
+IMAGE_INSTALL:append = " rugix-admin"
+```
+
+The package pulls in `rugix-ctrl-daemon` and a compatible `rugix-ctrl` release.
+Both systemd services are enabled automatically. Rugix Admin listens on the
+loopback interface by default, and optional privileged operation families
+remain disabled until explicitly enabled.
+
+All examples select Rugix Ctrl 1.3 and include Rugix Admin and the privileged
+operation daemon.
+
+Configure the daemon recipe from your distribution configuration or
+`local.conf` with the following Boolean variables:
+
+```bitbake
+RUGIX_CTRL_DAEMON_FACTORY_RESET = "true"
+RUGIX_CTRL_DAEMON_SYSTEM_COMMIT = "true"
+RUGIX_CTRL_DAEMON_SYSTEM_REBOOT = "true"
+RUGIX_CTRL_DAEMON_APP_LIFECYCLE = "true"
+```
+
+Enable only the operations required by the device. See the
+[privileged operation daemon reference](https://rugix.org/docs/ctrl/reference/privileged-daemon/)
+for the authoritative policy documentation. The recipe builds Rugix Admin and
+its embedded browser interface from a pinned source revision.
 
 ## Rugix BSP Layers
 

@@ -1,0 +1,16 @@
+[Unit]
+Description=Rugix Admin
+ConditionFileIsExecutable=/usr/bin/rugix-admin
+After=rugix-ctrl-daemon.service
+Requires=rugix-ctrl-daemon.service
+
+[Service]
+DynamicUser=yes
+User=rugix-admin
+Group=rugix-daemon
+NoNewPrivileges=true
+ExecStart=/usr/bin/rugix-admin
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

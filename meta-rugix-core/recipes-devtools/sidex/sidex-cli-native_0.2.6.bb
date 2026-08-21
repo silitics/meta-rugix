@@ -17,6 +17,7 @@ inherit cargo native
 do_compile[network] = "1"
 CARGO_DISABLE_BITBAKE_VENDORING = "1"
 CARGO_BUILD_FLAGS:remove = "--frozen"
+CARGO_BUILD_FLAGS:append = " --locked "
 CARGO_BUILD_FLAGS:append = " --package sidex-cli --bin sidex "
 CARGO_BUILD_FLAGS:append = " --config 'profile.release.strip="none"'"
 

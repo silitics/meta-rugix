@@ -30,13 +30,31 @@ RUGIX_ADMIN_PNPM_VERSION = "10.34.5"
 do_compile[network] = "1"
 CARGO_DISABLE_BITBAKE_VENDORING = "1"
 CARGO_BUILD_FLAGS:remove = "--frozen"
+CARGO_BUILD_FLAGS:append = " --locked "
 CARGO_BUILD_FLAGS:append = " --bin rugix-admin "
 CARGO_BUILD_FLAGS:append = " --config 'profile.release.strip="none"'"
 
 RUSTFLAGS:append = " --remap-path-prefix=${TMPDIR}=/usr/src/debug/${PN}/${PV}"
 INSANE_SKIP:${PN}-dbg += "buildpaths"
 
+do_configure:prepend() {
+    sed -i \
+        '/^\[workspace\.package\]$/,/^\[/ s/^version = "[^"]*"$/version = "${PV}"/' \
+        ${S}/Cargo.toml
+    sed -i \
+        '/^name = "rugix-admin"$/ { n; s/^version = "[^"]*"$/version = "${PV}"/; }' \
+        ${S}/Cargo.lock
+
+    grep -A 8 '^\[workspace\.package\]$' ${S}/Cargo.toml \
+        | grep -qx 'version = "${PV}"' \
+        || bbfatal "failed to materialize Rugix Admin version in Cargo.toml"
+    grep -A 1 '^name = "rugix-admin"$' ${S}/Cargo.lock \
+        | grep -qx 'version = "${PV}"' \
+        || bbfatal "failed to materialize Rugix Admin version in Cargo.lock"
+}
+
 do_compile:prepend() {
+    export RUGIX_ADMIN_VERSION="v${PV}"
     export COREPACK_HOME="${WORKDIR}/corepack"
     export COREPACK_ENABLE_PROJECT_SPEC=0
     install -d "${WORKDIR}/corepack-bin"
